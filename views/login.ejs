@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .card { background: #1e293b; padding: 2rem; border-radius: 10px; width: 350px; border: 1px solid #334155; }
+    h2 { color: #7c3aed; margin-top: 0; }
+    input { width: 100%; padding: 0.8rem; margin: 0.5rem 0 1rem 0; background: #0f1117; border: 1px solid #334155; color: white; border-radius: 5px; box-sizing: border-box; }
+    button { width: 100%; padding: 0.8rem; background: #7c3aed; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; }
+    button:hover { background: #6d28d9; }
+    .error { color: #ef4444; font-size: 0.85rem; margin-bottom: 1rem; display: none; }
+    p { font-size: 0.9rem; text-align: center; }
+    a { color: #a78bfa; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Login</h2>
+    <div id="errorMsg" class="error"></div>
+    <form id="loginForm">
+      <label>Email</label>
+      <input type="email" id="email" required placeholder="you@example.com" />
+      
+      <label>Password</label>
+      <input type="password" id="password" required placeholder="••••••••" />
+      
+      <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="/auth/register">Register</a></p>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+
+      try {
+        const res = await fetch('/auth/login', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          // store JWT in localStorage if needed later
+          localStorage.setItem('token', data.token);
+          // Redirect to Chat Room!
+          window.location.href = '/chat/room';
+        } else {
+          errorMsg.textContent = data.message;
+          errorMsg.style.display = 'block';
+        }
+      } catch (err) {
+        errorMsg.textContent = 'Server error. Please try again.';
+        errorMsg.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

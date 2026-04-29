@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Comprehensive SEO Meta Tags -->
+    <title>Chat Log Analyzer | Advanced AI Conversation Intelligence</title>
+    <meta name="description"
+        content="Unlock actionable insights from your chat logs. Premium sentiment analysis, temporal distribution metrics, and intelligent word frequency mapping.">
+    <meta name="keywords"
+        content="chat log analyzer, sentiment analysis, AI conversation intelligence, text analytics, NLP SaaS">
+    <meta name="author" content="Nexus Analytics">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Chat Log Analyzer | Precision Insights">
+    <meta property="og:description"
+        content="Discover instantaneous sentiment analysis, interactive visualizations, and deep conversational metrics.">
+
+    <!-- Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+    <!-- Application Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dark-theme">
+    <video autoplay loop muted playsinline class="bg-video">
+        <source src="background.mp4" type="video/mp4">
+    </video>
+    <!-- Ambient Background overlay for blobs -->
+    <div class="ambient-bg" style="display: none;">
+        <div class="blob shape-1"></div>
+        <div class="blob shape-2"></div>
+        <div class="blob shape-3"></div>
+        <div class="noise-overlay"></div>
+    </div>
+
+    <!-- Header ----------------------------------------------->
+    <header class="glass-header">
+        <div class="container header-container">
+            <a href="#" class="brand-logo" aria-label="Home" onclick="switchView('home'); return false;">
+                <img src="logo.png" alt="Nexus Analytics Logo" style="height: 40px;">
+                <span class="brand-text">Chat<span class="gradient-text gradient-flow">View</span></span>
+            </a>
+            <nav class="primary-nav">
+                <button id="getStartedBtnNav" class="btn btn-outline-glow" onclick="switchView('upload')">Get
+                    Started</button>
+            </nav>
+        </div>
+    </header>
+
+    <main id="app-container">
+        <!-- HOME VIEW ----------------------------------------->
+        <div id="view-home" class="view-section view-active">
+            <!-- Hero Section -------------------------------------->
+            <section class="hero-section hero-left-bottom">
+                <div class="container hero-content">
+                    <h1 class="hero-headline">
+                        Decode Your Data.<br />
+                        <span class="gradient-text gradient-flow">Master the Conversation.</span>
+                    </h1>
+                    <p class="hero-subtext">
+                        Transform raw chat logs into strategic intelligence. Surface sentiment, behavioral patterns, and
+                        volumetric trends instantaneously.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary btn-lg btn-glow" onclick="switchView('upload')">
+                            Analyze Workspace
+                            <span class="icon-right">→</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="floating-cards-container hidden-mobile">
+                    <div class="float-card card-left float-anim delay-1">
+                        <div class="fc-icon text-accent">↑</div>
+                        <div class="fc-data">
+                            <span class="fc-label">Sentiment Shift</span>
+                            <span class="fc-value">Positive</span>
+                        </div>
+                    </div>
+                    <div class="float-card card-right float-anim delay-2">
+                        <div class="fc-icon text-purple">⚡</div>
+                        <div class="fc-data">
+                            <span class="fc-label">Peak Activity</span>
+                            <span class="fc-value">14:00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            </section>
+        </div> <!-- End Home View -->
+
+        <!-- UPLOAD VIEW -------------------------------------->
+        <div id="view-upload" class="view-section view-hidden">
+            <section class="analysis-workspace">
+                <div class="container mt-6">
+                    <div class="section-heading text-center">
+                        <h2 class="h2-title">Initialize Analysis</h2>
+                        <p class="section-desc">Deploy your chat export (.txt) into the parsing engine.</p>
+                    </div>
+
+                    <div class="upload-module glass-panel">
+                        <div class="drag-drop-zone interactive-zone" id="dragDropArea">
+                            <div class="zone-content">
+                                <div class="upload-icon-wrapper glow-icon">
+                                    ⭳ <!-- Fallback simple icon -->
+                                </div>
+                                <h3 class="zone-title">Drag & Drop Dataset</h3>
+                                <p class="zone-sub">or <span class="highlight-link">browse local files</span></p>
+                                <span class="zone-meta">Accepts standard .txt log formats up to 10MB</span>
+                            </div>
+                            <input type="file" id="fileInput" accept=".txt" class="hidden-input">
+                        </div>
+
+                        <div class="file-status-indicator" id="fileInfo"></div>
+
+                        <button class="btn btn-primary btn-block btn-analyze" id="analyzeBtn" disabled>
+                            Commence Pipeline
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dynamic Loaders & Error States -------------------->
+            <div class="overlay-glass loading-overlay" id="loadingOverlay">
+                <div class="loader-module">
+                    <div class="hex-spinner"></div>
+                    <div class="loader-text">Processing Tokens...</div>
+                </div>
+            </div>
+
+            <div class="alert-toast error-toast" id="errorBanner">
+                <div class="toast-body">
+                    <span class="toast-icon">⚠️</span>
+                    <div class="toast-content">
+                        <p class="toast-title">Engine Fault</p>
+                        <p class="toast-message" id="errorMessage"></p>
+                    </div>
+                    <button class="toast-close"
+                        onclick="document.getElementById('errorBanner').classList.remove('active')">×</button>
+                </div>
+            </div>
+
+            </section>
+        </div> <!-- End Upload View -->
+
+        <!-- DASHBOARD VIEW ----------------------------------->
+        <div id="view-dashboard" class="view-section view-hidden">
+            <section class="dashboard-viewport">
+                <div class="container mt-6">
+                    <div class="dashboard-header split-header">
+                        <div>
+                            <h2 class="h2-title gradient-text inline">Telemetry Dashboard</h2>
+                            <p class="dashboard-meta">Analysis complete. Interactive intelligence ready.</p>
+                        </div>
+                        <button class="btn btn-secondary btn-icon" onclick="location.reload()">Reset Engine</button>
+                    </div>
+
+                    <!-- Core KPIs -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card glass-panel hover-lift">
+                            <div class="kpi-icon-box bg-accent">💬</div>
+                            <div class="kpi-details">
+                                <p class="kpi-label">Volume</p>
+                                <p class="kpi-value ticker" id="totalMessages">0</p>
+                            </div>
+                        </div>
+                        <div class="kpi-card glass-panel hover-lift delay-1">
+                            <div class="kpi-icon-box bg-purple">👥</div>
+                            <div class="kpi-details">
+                                <p class="kpi-label">Entities</p>
+                                <p class="kpi-value ticker" id="totalUsers">0</p>
+                            </div>
+                        </div>
+                        <div class="kpi-card glass-panel hover-lift delay-2">
+                            <div class="kpi-icon-box bg-pink">⭐</div>
+                            <div class="kpi-details">
+                                <p class="kpi-label">Apex User</p>
+                                <p class="kpi-value text-truncate" id="mostActiveUser">-</p>
+                            </div>
+                        </div>
+                        <div class="kpi-card glass-panel hover-lift delay-3">
+                            <div class="kpi-icon-box bg-cyan">🕒</div>
+                            <div class="kpi-details">
+                                <p class="kpi-label">Peak Velocity</p>
+                                <p class="kpi-value" id="mostActiveHour">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visualizations Layer -->
+                    <div class="bento-grid">
+                        <!-- Sentiment Doughnut -->
+                        <div class="bento-box bento-sentiment glass-panel">
+                            <div class="bento-header">
+                                <h3 class="bento-title">Emotional Resonance</h3>
+                                <div class="context-pill">Aggregate</div>
+                            </div>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="sentimentChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Word Frequency Bar -->
+                        <div class="bento-box bento-words glass-panel">
+                            <div class="bento-header">
+                                <h3 class="bento-title">Lexicon Dominance</h3>
+                            </div>
+                            <div class="chart-canvas-wrapper bar-wrapper">
+                                <canvas id="wordsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Hourly Heatmap/Line -->
+                        <div class="bento-box bento-temporal glass-panel col-span-full">
+                            <div class="bento-header">
+                                <h3 class="bento-title">Temporal Distribution</h3>
+                            </div>
+                            <div class="chart-canvas-wrapper line-wrapper">
+                                <canvas id="hourlyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabular Insights -->
+                    <div class="data-tables-grid mt-4">
+                        <div class="table-container glass-panel">
+                            <div class="bento-header">
+                                <h3 class="bento-title">Lexical Entities</h3>
+                            </div>
+                            <div class="tag-cloud" id="wordsList">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+
+                        <div class="table-container glass-panel">
+                            <div class="bento-header">
+                                <h3 class="bento-title">Entity Activity Rank</h3>
+                            </div>
+                            <div class="modern-table-wrapper">
+                                <table class="modern-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Identifier</th>
+                                            <th class="text-right">Vol</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="userActivity">
+                                        <!-- Populated via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-footer action-bar mt-5">
+                        <button class="btn btn-primary btn-glow" onclick="exportResults()">
+                            ↓ Synthesize JSON Payload
+                        </button>
+                        <button class="btn btn-secondary btn-glow" onclick="window.location.href='/auth/login'" style="margin-left: 1rem; background: #4c1d95; color: white;">
+                            💬 Send the Analysis Report
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+        </div>
+        </section>
+        </div> <!-- End Dashboard View -->
+    </main>
+
+    <!-- Footer -------------------------------------------->
+    <footer class="glass-footer bg-darker mt-6">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <img src="logo.png" alt="Nexus Analytics Logo" class="footer-logo">
+                <span>Chat View &copy; 2026. Data Mastered.</span>
+            </div>
+            <div class="footer-links">
+                <span class="tech-spec text-muted">Powered by JS Engine & ChartJS v4</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+
+</html>

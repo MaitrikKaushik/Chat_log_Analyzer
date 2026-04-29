@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+    .hero { max-width: 900px; margin: 0 auto; }
+    h1 { font-size: 2.5rem; color: #7c3aed; margin-bottom: 0.5rem; }
+    .subtitle { color: #94a3b8; margin-bottom: 2rem; font-size: 1.1rem; }
+    .badge { display: inline-block; background: #1e293b; border: 1px solid #334155; border-radius: 4px; padding: 0.2rem 0.6rem; font-size: 0.8rem; margin-bottom: 0.3rem; }
+    .ssr-note { background: #1e293b; border-left: 4px solid #7c3aed; padding: 1rem 1.5rem; border-radius: 0 8px 8px 0; margin-bottom: 2rem; }
+    .ssr-note code { color: #a78bfa; font-size: 0.9rem; }
+    .concepts { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .concept-card { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.2rem; }
+    .concept-card h3 { color: #7c3aed; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .concept-card p { color: #94a3b8; font-size: 0.85rem; line-height: 1.5; }
+    .links { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    a.btn { background: #7c3aed; color: white; padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; transition: background 0.2s; }
+    a.btn:hover { background: #6d28d9; }
+    a.btn.outline { background: transparent; border: 1px solid #7c3aed; color: #a78bfa; }
+    .user-bar { background: #1e293b; padding: 0.75rem 1.2rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+  </style>
+</head>
+<body>
+<div class="hero">
+  <h1>🚀 <%= title %></h1>
+  <p class="subtitle"><%= message %> — <%= status %></p>
+
+  <!-- CONCEPT 5: Show session user if logged in (server inserts this at render time) -->
+  <% if (user) { %>
+  <div class="user-bar">
+    <span>👤 Logged in as <strong><%= user.username %></strong> (<%= user.role %>)</span>
+    <a href="/auth/logout" class="btn outline">Logout</a>
+  </div>
+  <% } else { %>
+  <div class="user-bar">
+    <span>🔒 Not logged in</span>
+    <div>
+      <a href="/auth/login" class="btn outline" style="margin-right:0.5rem">Login</a>
+      <a href="/auth/register" class="btn">Register</a>
+    </div>
+  </div>
+  <% } %>
+
+  <!-- CONCEPT 2: SSR vs CSR explanation -->
+  <div class="ssr-note">
+    <strong>📌 Concept 2 — SSR (Server-Side Rendering):</strong><br>
+    This page was generated on the <em>server</em> using EJS template engine before being sent to your browser.<br>
+    The server ran <code>res.render('index', { title, user, ... })</code> and injected dynamic data into the HTML.<br>
+    <strong>CSR</strong> (client-side) = browser downloads JS and renders content itself (React, Vue, etc.)
+  </div>
+
+  <div class="concepts">
+    <div class="concept-card">
+      <h3>Concept 1</h3>
+      <p><strong>Middleware</strong> — App-level logger, router-level API logger, body-parser, error-handling (4-param), third-party (session, passport)</p>
+    </div>
+    <div class="concept-card">
+      <h3>Concept 2</h3>
+      <p><strong>SSR vs CSR + EJS</strong> — This page is SSR. <code>res.render('index', data)</code> runs on server. HBS/EJS template engines compile HTML server-side.</p>
+    </div>
+    <div class="concept-card">
+      <h3>Concept 3 &amp; 4</h3>
+      <p><strong>MongoDB + Mongoose ODM</strong> — NoSQL document DB. Mongoose provides Schema, Model, validation, pre-save hooks, and query helpers.</p>
+    </div>
+    <div class="concept-card">
+      <h3>Concept 5</h3>
+      <p><strong>Sessions &amp; Cookies</strong> — <code>express-session</code> stores server-side session. Client gets a cookie with session ID only.</p>
+    </div>
+    <div class="concept-card">
+      <h3>Concept 6 &amp; 7</h3>
+      <p><strong>Auth: Bcrypt + JWT + Passport</strong> — Passwords hashed with bcrypt. JWT tokens for stateless auth. Passport.js local strategy.</p>
+    </div>
+    <div class="concept-card">
+      <h3>Concept 8</h3>
+      <p><strong>Socket.io Full Duplex</strong> — Persistent WebSocket connection. Server can push to client anytime. Real-time chat rooms.</p>
+    </div>
+  </div>
+
+  <div class="links">
+    <a href="/api" class="btn">📦 API Routes</a>
+    <a href="/api/about" class="btn outline">ℹ️ About</a>
+    <a href="/api/db-status" class="btn outline">🗄️ DB Status</a>
+    <a href="/auth/session-info" class="btn outline">🍪 Session Info</a>
+    <a href="/chat/room" class="btn">💬 Live Chat Room</a>
+    <a href="/chat/info" class="btn outline">🔌 Socket Info</a>
+  </div>
+</div>
+</body>
+</html>
